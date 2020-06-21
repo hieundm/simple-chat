@@ -32,7 +32,9 @@
     ]
   },
   "devDependencies": {
+    "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
-    "react-bootstrap": "^1.0.1"
+    "react-bootstrap": "^1.0.1",
+    "react-toastify": "^6.0.5"
   }
 }

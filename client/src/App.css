@@ -1,7 +1,19 @@
-html, body, #root{
+#root,
+body,
+html {
   height: 100%;
 }
 
-body{
+body {
   background-color: #efefef !important;
+}
+
+body * {
+  font-family: "Baloo Thambi 2", cursive !important;
+}
+
+body button {
+  outline: none;
+  border: none;
+  box-shadow: none;
 }

@@ -1,0 +1,7 @@
+{
+  "apiHost": "http://localhost:9000",
+  "cookie": {
+    "credential": "SimpleChatCredential",
+    "userInfo": "SimpleChatUserInfo"
+  }
+}
