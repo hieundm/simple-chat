@@ -1,20 +1,14 @@
-const config = require("../appsetting");
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const router = express.Router();
-const utils = require("../helpers/utils");
 const connection = require("../connection/connection");
 const { manipulate } = require("../helpers/functionBase");
-const validateCode = require("../constants/auth/validateCode");
 const responseCode = require("../constants/responseCode");
-const md5 = require("md5");
 
 connection.once("open", function () { });
 
 const userModel = require("../models/user");
 const { hashPassword } = require("../business/crypto");
 
-const EMAIL_REGEX = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 
 /**
  * @swagger
@@ -169,9 +163,8 @@ router.post("/forgot-password", async (req, res) => {
  *    tags:
  *        - Account
  */
-router.post("/register", async (req, res) => {
-    await manipulate((responseData) => {
-        const { firstname, lastname, company, address, city, phone1, email, password } = req.body;
+router.post("/register", async (req) => {
+    await manipulate(() => {
 
 
     });
