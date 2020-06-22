@@ -5,10 +5,12 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const jwt = require("./helpers/jwt");
 const logger = require("morgan");
-const routes = require("./routes/main-routes");
+const routes = require("./controllers/main-routes");
 const swaggerDocument = require("./swagger.ts");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
+
+require("dotenv").config();
 
 const app = express();
 
@@ -25,7 +27,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const swaggerOption = {
   swaggerDefinition: swaggerDocument,
-  apis: ["./routes/*.js"],
+  apis: ["./controllers/*.js"],
 };
 
 const customOption = {

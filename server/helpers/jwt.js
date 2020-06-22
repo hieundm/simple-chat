@@ -15,7 +15,13 @@ const jwt = () => {
       return null;
     },
   }).unless({
-    path: ["/auth", /^\/readme\/index/, /^\/readme\/index\/.*/],
+    path: [
+      "/auth",
+      "/account/forgot-password",
+      "/account/register",
+      /^\/readme\/index/,
+      /^\/readme\/index\/.*/,
+    ],
   });
 };
 

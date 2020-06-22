@@ -13,8 +13,7 @@ const manipulate = async (toDo) => {
     } else {
       toDo(responseData);
     }
-  } catch (error) {
-  }
+  } catch (error) {}
 };
 
 exports.manipulate = manipulate;
