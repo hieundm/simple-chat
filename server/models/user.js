@@ -6,6 +6,33 @@ const userSchema = new mongoose.Schema({
   last_name: {
     type: "String",
   },
+  company_name: {
+    type: "String"
+  },
+  address: {
+    type: "String"
+  },
+  city: {
+    type: "String"
+  },
+  county: {
+    type: "String"
+  },
+  state: {
+    type: "String"
+  },
+  zip: {
+    type: "String"
+  },
+  phone1: {
+    type: "String"
+  },
+  phone2: {
+    type: "String"
+  },
+  web: {
+    type: "String"
+  },
   email: {
     type: "String",
     required: true,

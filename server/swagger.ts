@@ -1,8 +1,5 @@
 const swaggerDocument = {
   swagger: "2.0",
-  customCss: ".swagger-ui .topbar { background-color: pink }",
-  customCssUrl:
-    "https://cdn.jsdelivr.net/npm/swagger-ui-themes@3.0.0/themes/3.x/theme-newspaper.css",
   securityDefinitions: {
     jwt: {
       type: "apiKey",

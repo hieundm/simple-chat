@@ -7,14 +7,11 @@ const connection = require("../connection/connection");
 const { manipulate } = require("../helpers/functionBase");
 const validateCode = require("../constants/auth/validateCode");
 const responseCode = require("../constants/responseCode");
-const md5 = require("md5");
+const { hashPassword, validateEmail } = require("../business/crypto");
 
-connection.once("open", function () {});
+connection.once("open", function () { });
 
 const userModel = require("../models/user");
-const { HttpError } = require("http-errors");
-
-const EMAIL_REGEX = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
 
 /**
  * @swagger
@@ -69,11 +66,7 @@ router.post("/", async function (req, res) {
     if (query) {
       const data = await query.findOne();
 
-      const hashedPassword = md5(password);
-
-      const hashedPasswordWithSalt = md5(
-        `${hashedPassword}${data.salt}`
-      ).toUpperCase();
+      const hashedPasswordWithSalt = hashPassword(password, data.salt);
 
       if (hashedPasswordWithSalt !== data.password) {
         responseData.data = "Fail";
@@ -114,10 +107,6 @@ const validateAuthRequest = (email, password) => {
     return validateCode.INVALID_EMAIL;
   }
   return validateCode.OK;
-};
-
-const validateEmail = (email) => {
-  return EMAIL_REGEX.test(email);
 };
 
 module.exports = router;
