@@ -1,37 +1,10 @@
 import React from "react";
-import { signIn } from "../../services/auth";
 import { Card, Col, Row } from "react-bootstrap";
+import LoginForm from './login-form';
+import ForgotPasswordForm from './forgot-password-form'
 import "./index.css";
 
-const LoginForm = () => {
-  const [formData, setFormData] = React.useState({
-    email: "",
-    password: "",
-  });
-
-  const onChange = {
-    email: (event) => {
-      const { value } = event.target;
-
-      setFormData((prevData) => {
-        return {
-          ...prevData,
-          email: value,
-        };
-      });
-    },
-    password: (event) => {
-      const { value } = event.target;
-
-      setFormData((prevData) => {
-        return {
-          ...prevData,
-          password: value,
-        };
-      });
-    },
-  };
-
+const LoginForm = ({ isForgotPassword }) => {
   return (
     <div className="py-5 login-form">
       <div className="login-form__wrapper">
@@ -47,35 +20,7 @@ const LoginForm = () => {
                 </div>
               </Col>
               <Col md={6}>
-                <h3>Member Login</h3>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    placeholder="Email"
-                    onChange={(event) => onChange.email(event)}
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    onChange={(event) => onChange.password(event)}
-                  />
-                </div>
-                <div className="form-group">
-                  <button
-                    className="login-form__button-sign-in"
-                    onClick={() => signIn(formData.email, formData.password)}
-                  >
-                    Login
-                  </button>
-                </div>
-                <div className="login-form__forgot-text">
-                  <span className="txt1">Forgot</span>{" "}
-                  <a className="txt2" href="#">
-                    Password?
-                  </a>
-                </div>
+                <Body></Body>
                 <div className="login-form__create-account">
                   <a className="txt2" href="#">
                     Create your Account
@@ -89,5 +34,14 @@ const LoginForm = () => {
     </div>
   );
 };
+
+const Body = () => {
+  if (isForgotPassword === true) {
+    return <LoginForm></LoginForm>
+  }
+
+  return <ForgotPasswordForm></ForgotPasswordForm>
+}
+
 
 export default LoginForm;

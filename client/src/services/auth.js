@@ -1,5 +1,5 @@
-import {base} from "../helpers/ultils";
-import {notify} from "../helpers/toast";
+import { base } from "../helpers/ultils";
+import { notify } from "../helpers/toast";
 import * as config from "../appsetting.json";
 
 const signIn = async (email, password) => {
@@ -37,6 +37,30 @@ const signIn = async (email, password) => {
   return true;
 };
 
-export  {
+const forgotPassword = async (email, newPassword) => {
+  if (!email || email.length < 1 || !newPassword || newPassword.length < 1) {
+    return false;
+  }
+
+  const response = await base.post("/account/forgot-password", {
+    email,
+    newPassword,
+  });
+
+  base.onResponse(
+    response,
+    (data) => {
+      notify.success("Change password successfull!");
+    },
+    (response) => console.log(response)
+  );
+
+  return true;
+}
+
+
+export {
+  forgotPassword
+  ,
   signIn
 };
