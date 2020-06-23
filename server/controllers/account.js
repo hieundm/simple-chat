@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const connection = require("../connection/connection");
-const { manipulate } = require("../helpers/functionBase");
-const responseCode = require("../constants/responseCode");
-const userModel = require("../models/user");
-const { hashPassword, validateEmail } = require("../business/crypto");
-const { randomString } = require("../helpers/utils");
+const { manipulate } = require("../helpers/FunctionBase");
+const responseCode = require("../constants/ResponseCode");
+const userModel = require("../models/User");
+const { hashPassword, validateEmail } = require("../business/Crypto");
+const { randomString } = require("../helpers/Utils");
 
 connection.once("open", function () {});
 

@@ -1,5 +1,5 @@
-const ResponseData = require("../models/shared/responseData");
-const responseCode = require("../constants/responseCode");
+const ResponseData = require("../models/shared/ResponseData");
+const responseCode = require("../constants/ResponseCode");
 
 const manipulate = async (toDo) => {
   try {
