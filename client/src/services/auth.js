@@ -1,9 +1,11 @@
-import { base } from "../helpers/ultils";
-import { notify } from "../helpers/toast";
+import { base } from "../helpers/Utils";
+import { notify } from "../helpers/Toast";
 import * as config from "../appsetting.json";
 
 const signIn = async (email, password) => {
   if (!email || email.length < 1 || !password || password.length < 1) {
+    notify.error("Please fill full information!");
+
     return false;
   }
 
@@ -37,30 +39,4 @@ const signIn = async (email, password) => {
   return true;
 };
 
-const forgotPassword = async (email, newPassword) => {
-  if (!email || email.length < 1 || !newPassword || newPassword.length < 1) {
-    return false;
-  }
-
-  const response = await base.post("/account/forgot-password", {
-    email,
-    newPassword,
-  });
-
-  base.onResponse(
-    response,
-    (data) => {
-      notify.success("Change password successfull!");
-    },
-    (response) => console.log(response)
-  );
-
-  return true;
-}
-
-
-export {
-  forgotPassword
-  ,
-  signIn
-};
+export { signIn };

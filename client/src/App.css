@@ -18,6 +18,12 @@ body button {
   box-shadow: none;
 }
 
+.img-fit {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
 .login-form {
   width: 100%;
   min-height: 100vh;
@@ -88,10 +94,15 @@ body button {
   -o-transition: all 0.4s;
   -moz-transition: all 0.4s;
   transition: all 0.4s;
+  outline: none;
 }
 
 .login-form__button-sign-in:hover {
   background: #333333;
+}
+
+.login-form__button-sign-in:focus {
+  outline: none;
 }
 
 .login-form__forgot-text {
@@ -111,4 +122,15 @@ body button {
   height: 100%;
   width: 100%;
   object-fit: contain;
+}
+
+.login-form .form-group {
+  position: relative;
+}
+
+.login-form .form-group .prepend {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 30px;
 }

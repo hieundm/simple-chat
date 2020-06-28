@@ -51,6 +51,9 @@ const Login = () => {
               <Col md={6}>
                 <h3>Member Login</h3>
                 <div className="form-group">
+                  <div className="prepend">
+                    <i className="fas fa-user"></i>
+                  </div>
                   <input
                     type="text"
                     placeholder="Email"
@@ -58,6 +61,9 @@ const Login = () => {
                   />
                 </div>
                 <div className="form-group">
+                  <div className="prepend">
+                    <i className="fas fa-lock"></i>
+                  </div>
                   <input
                     type="password"
                     placeholder="Password"

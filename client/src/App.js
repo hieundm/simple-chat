@@ -4,11 +4,13 @@ import "react-toastify/dist/ReactToastify.css";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Login from "./components/Login/index";
 import ForgotPassword from "./components/ForgotPassword";
-import { base } from "./helpers/ultils";
+import Register from "./components/Register";
+import ChatBox from "./components/ChatBox";
+import { base } from "./helpers/Utils";
 import * as config from "./appsetting.json";
 import { SimpleChatProvider, SimpleChatContext } from "./context";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import "./helpers/extensions";
+import "./helpers/Extensions";
 
 function App() {
   return (
@@ -49,19 +51,19 @@ function AuthenticateToRedirect() {
   }, []);
   return (
     <React.Fragment>
-      {state.hasLogged === true ? (
-        <div>123</div>
+      {state.hasLogged === false ? (
+        <ChatBox></ChatBox>
       ) : (
         <Switch>
-          <Route path="/login">
+          <Route exact path={["/", "/login"]}>
             <Login />
           </Route>
           <Route path="/forgot-password">
             <ForgotPassword />
           </Route>
-          {/* <Route path="/register">
-          <Home />
-        </Route> */}
+          <Route path="/register">
+            <Register />
+          </Route>
         </Switch>
       )}
     </React.Fragment>

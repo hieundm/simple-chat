@@ -2,7 +2,7 @@
 import React from "react";
 import { Card, Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { forgotPassword } from "../../services/Auth";
+import { forgotPassword } from "../../services/Account";
 
 const ForgotPassword = (_) => {
   const [formData, setFormData] = React.useState({
@@ -50,6 +50,9 @@ const ForgotPassword = (_) => {
               <Col md={6}>
                 <h3>Forgot password</h3>
                 <div className="form-group">
+                  <div className="prepend">
+                    <i className="fas fa-user"></i>
+                  </div>
                   <input
                     type="text"
                     placeholder="Email"
@@ -57,6 +60,9 @@ const ForgotPassword = (_) => {
                   />
                 </div>
                 <div className="form-group">
+                  <div className="prepend">
+                    <i className="fas fa-lock"></i>
+                  </div>
                   <input
                     type="password"
                     placeholder="Enter new password"
@@ -72,6 +78,12 @@ const ForgotPassword = (_) => {
                   >
                     Submit
                   </button>
+                </div>
+                <div className="login-form__forgot-text">
+                  <span className="txt1">Have an account,</span>{" "}
+                  <Link className="txt2" to="/login">
+                    login?
+                  </Link>
                 </div>
                 <div className="login-form__create-account">
                   <Link to="/register" className="txt2">

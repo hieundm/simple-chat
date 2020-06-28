@@ -135,8 +135,8 @@ router.post("/forgot-password", async (req, res) => {
 router.post("/register", async (req, res) => {
   await manipulate(async (responseData) => {
     const {
-      firstname,
-      lastname,
+      first_name,
+      last_name,
       company,
       address,
       city,
@@ -146,10 +146,10 @@ router.post("/register", async (req, res) => {
     } = req.body;
 
     if (
-      !firstname ||
-      firstname.length < 1 ||
-      !lastname ||
-      lastname.length < 1 ||
+      !first_name ||
+      first_name.length < 1 ||
+      !last_name ||
+      last_name.length < 1 ||
       !password ||
       password.length < 1 ||
       validateEmail(email) === false
@@ -167,8 +167,8 @@ router.post("/register", async (req, res) => {
     const hashedPassword = hashPassword(password, salt);
 
     await userModel.create({
-      first_name: firstname,
-      last_name: lastname,
+      first_name,
+      last_name,
       company_name: company,
       address,
       city,
