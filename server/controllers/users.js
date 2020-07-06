@@ -6,7 +6,7 @@ connection.once("open", function () {
   console.log("MongoDB database connection established successfully");
 });
 
-const userModel = require("../models/User");
+const rpUser = require("../repositories/User");
 
 /**
  * @swagger
@@ -31,7 +31,7 @@ router.get("/getList", async function (req, res, next) {
 
 const getList = async () => {
   return new Promise((resolve) => {
-    const data = userModel.find();
+    const data = rpUser.find();
 
     resolve(data);
   });

@@ -7,31 +7,31 @@ const userSchema = new mongoose.Schema({
     type: "String",
   },
   company_name: {
-    type: "String"
+    type: "String",
   },
   address: {
-    type: "String"
+    type: "String",
   },
   city: {
-    type: "String"
+    type: "String",
   },
   county: {
-    type: "String"
+    type: "String",
   },
   state: {
-    type: "String"
+    type: "String",
   },
   zip: {
-    type: "String"
+    type: "String",
   },
   phone1: {
-    type: "String"
+    type: "String",
   },
   phone2: {
-    type: "String"
+    type: "String",
   },
   web: {
-    type: "String"
+    type: "String",
   },
   email: {
     type: "String",
@@ -48,8 +48,14 @@ const userSchema = new mongoose.Schema({
     type: "String",
     required: true,
   },
+  last_online_at: {
+    type: "String",
+  },
+  is_active: {
+    type: "Boolean",
+  },
 });
 
-const userModel = mongoose.model("users", userSchema);
+const userRepository = mongoose.model("users", userSchema);
 
-module.exports = userModel;
+module.exports = userRepository;

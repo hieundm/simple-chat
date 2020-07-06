@@ -11,7 +11,7 @@ const { hashPassword, validateEmail } = require("../business/Crypto");
 
 connection.once("open", function () {});
 
-const userModel = require("../models/User");
+const rpUser = require("../repositories/User");
 
 /**
  * @swagger
@@ -61,7 +61,7 @@ router.post("/", async function (req, res) {
       return;
     }
 
-    const query = userModel.where({ email: email });
+    const query = rpUser.where({ email: email });
 
     if (query) {
       const data = await query.findOne();

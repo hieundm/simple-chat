@@ -3,7 +3,7 @@ const router = express.Router();
 const connection = require("../connection/connection");
 const { manipulate } = require("../helpers/FunctionBase");
 const responseCode = require("../constants/ResponseCode");
-const userModel = require("../models/User");
+const rpUser = require("../repositories/User");
 const { hashPassword, validateEmail } = require("../business/Crypto");
 const { randomString } = require("../helpers/Utils");
 
@@ -49,7 +49,7 @@ router.post("/forgot-password", async (req, res) => {
   await manipulate(async (responseData) => {
     const { email, newPassword } = req.body;
 
-    const user = await userModel.findOne({ email: email });
+    const user = await rpUser.findOne({ email: email });
 
     if (!user) {
       responseData.code = responseCode.forbidden.value;
@@ -166,7 +166,7 @@ router.post("/register", async (req, res) => {
 
     const hashedPassword = hashPassword(password, salt);
 
-    await userModel.create({
+    await rpUser.create({
       first_name,
       last_name,
       company_name: company,
@@ -178,7 +178,7 @@ router.post("/register", async (req, res) => {
       password: hashedPassword,
     });
 
-    const newUser = await userModel.findOne({ email: email });
+    const newUser = await rpUser.findOne({ email: email });
 
     responseData.code = responseCode.success.value;
     responseData.message = responseCode.success.description;
