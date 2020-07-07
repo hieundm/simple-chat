@@ -226,3 +226,10 @@
 .messenger__chat-box .bottom-nav button {
   color: white;
 }
+
+.friend__list {
+}
+
+.friend__item {
+  padding: 5px 0;
+}

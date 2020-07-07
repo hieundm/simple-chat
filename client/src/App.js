@@ -51,7 +51,7 @@ function AuthenticateToRedirect() {
   }, []);
   return (
     <React.Fragment>
-      {state.hasLogged === false ? (
+      {state.hasLogged === true ? (
         <ChatBox></ChatBox>
       ) : (
         <Switch>

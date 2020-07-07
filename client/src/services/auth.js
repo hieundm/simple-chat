@@ -32,6 +32,8 @@ const signIn = async (email, password) => {
         ),
         7
       );
+
+      window.location.reload();
     },
     (response) => console.log(response)
   );

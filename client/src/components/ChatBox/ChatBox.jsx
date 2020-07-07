@@ -1,8 +1,10 @@
 "use strict";
 import React from "react";
 import UserOverview from "./UserOverview";
+import FriendList from "./FriendList";
 import socketIOClient from "socket.io-client";
 import * as config from "../../appsetting.json";
+import { Button, Modal } from "react-bootstrap";
 import "./Index.css";
 import "./Index.device.css";
 //http://preview.themeforest.net/item/slek-chat-and-discussion-platform-html5-template/full_screen_preview/24935203
@@ -13,6 +15,11 @@ const ChatBox = (_) => {
   const [socket, setSocket] = React.useState(null);
   const [YOUR_ID, SET_YOUR_ID] = React.useState(Math.floor(Math.random() * 10));
   const [versionNo, updateVersionNo] = React.useState(0);
+  const [show, setShow] = React.useState(false);
+
+  const handleClose = () => setShow(false);
+
+  const handleShow = () => setShow(true);
 
   const onClickToggleAction = () => {
     toggleActionPanel((prev) => {
@@ -96,6 +103,13 @@ const ChatBox = (_) => {
         <div className="messenger__header">
           <div className="title">Chats</div>
           <div className="actions">
+            <button
+              className="messenger__button"
+              title="Add friend"
+              onClick={handleShow}
+            >
+              <i className="fas fa-user-plus"></i>
+            </button>
             <button className="messenger__button" title="New group">
               <i className="fas fa-user-friends"></i>
             </button>
@@ -201,6 +215,24 @@ const ChatBox = (_) => {
           </div>
         </div>
       </div>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="p-2">
+            <FriendList></FriendList>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

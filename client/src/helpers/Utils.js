@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { apiHost } = require("../appsetting.json");
+const { apiHost, cookie } = require("../appsetting.json");
 const { notify } = require("./Toast");
 
 const base = {
@@ -46,7 +46,11 @@ const base = {
       }
 
       axios
-        .post(`${apiHost}${path}`, data)
+        .post(`${apiHost}${path}`, data, {
+          headers: {
+            Authorization: atob(base.getCookie(cookie.credential)),
+          },
+        })
         .then((response) => {
           resolve(response.data);
         })
