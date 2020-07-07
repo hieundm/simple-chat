@@ -2,15 +2,15 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const mapper = require("../AutoMapper");
-const Get = require("../models/user/Get");
+const Get = require("../models/user/get");
 const connection = require("../connection/connection");
-const { manipulate } = require("../helpers/FunctionBase");
-const responseCode = require("../constants/ResponseCode");
-const { validateEmail } = require("../business/Crypto");
-const getList = require("../models/shared/GetList");
-const rpFriend = require("../repositories/Friend");
-const rpUser = require("../repositories/User");
-connection.once("open", function () {});
+const { manipulate } = require("../helpers/function-base");
+const responseCode = require("../constants/response-code");
+const { validateEmail } = require("../business/crypto");
+const getList = require("../models/shared/get-list");
+const rpFriend = require("../repositories/friend");
+const rpUser = require("../repositories/user");
+connection.once("open", function () { });
 
 /**
  * @swagger
@@ -85,7 +85,7 @@ router.post("/find", async (req, res) => {
           temp.push(mapper(user, "Get"));
         });
       }
-    } catch (error) {}
+    } catch (error) { }
 
     responseData.code = responseCode.success.value;
     responseData.message = responseCode.success.description;

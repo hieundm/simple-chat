@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const connection = require("../connection/connection");
-const { manipulate } = require("../helpers/FunctionBase");
-const responseCode = require("../constants/ResponseCode");
-const rpUser = require("../repositories/User");
-const { hashPassword, validateEmail } = require("../business/Crypto");
+const { manipulate } = require("../helpers/function-base");
+const responseCode = require("../constants/response-code");
+const rpUser = require("../repositories/user");
+const { hashPassword, validateEmail } = require("../business/crypto");
 const { randomString } = require("../helpers/Utils");
 
-connection.once("open", function () {});
+connection.once("open", function () { });
 
 /**
  * @swagger

@@ -2,16 +2,16 @@ const config = require("../appsetting");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
-const utils = require("../helpers/Utils");
-const connection = require("../connection/Connection");
-const { manipulate } = require("../helpers/FunctionBase");
-const validateCode = require("../constants/auth/ValidateCode");
-const responseCode = require("../constants/ResponseCode");
-const { hashPassword, validateEmail } = require("../business/Crypto");
+const utils = require("../helpers/utils");
+const connection = require("../connection/connection");
+const { manipulate } = require("../helpers/function-base");
+const validateCode = require("../constants/auth/validate-code");
+const responseCode = require("../constants/response-code");
+const { hashPassword, validateEmail } = require("../business/crypto");
 
-connection.once("open", function () {});
+connection.once("open", function () { });
 
-const rpUser = require("../repositories/User");
+const rpUser = require("../repositories/user");
 
 /**
  * @swagger

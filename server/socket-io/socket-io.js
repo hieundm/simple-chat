@@ -1,5 +1,5 @@
 const socketIO = require("socket.io");
-const { messengerInit } = require("./Messenger");
+const { messengerInit } = require("./messenger");
 
 var io;
 
