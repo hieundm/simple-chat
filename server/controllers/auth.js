@@ -9,7 +9,7 @@ const validateCode = require("../constants/auth/validate-code");
 const responseCode = require("../constants/response-code");
 const { hashPassword, validateEmail } = require("../business/crypto");
 
-connection.once("open", function () { });
+connection.once("open", function () {});
 
 const rpUser = require("../repositories/user");
 
@@ -70,6 +70,10 @@ router.post("/", async function (req, res) {
 
       if (hashedPasswordWithSalt !== data.password) {
         responseData.data = "Fail";
+
+        res.send(responseData);
+
+        return;
       } else {
         const displayName = utils.getDisplayName(
           data.first_name,

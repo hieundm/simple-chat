@@ -17,7 +17,7 @@ const signIn = async (email, password) => {
   base.onResponse(
     response,
     (data) => {
-      notify.success("Signed successfull!");
+      notify.success("Signed successfully!");
 
       base.setCookie(config.cookie.credential, btoa(data.token), 7);
 

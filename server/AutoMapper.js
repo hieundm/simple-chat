@@ -1,5 +1,4 @@
 const automapper = require("automapper-ts");
-const { getPropertyList } = require("./helpers/Utils");
 
 const autoMapper = (sourceObject, targetName, fromName) => {
   const _target = targetName.toLowerCase();
@@ -12,11 +11,9 @@ const autoMapper = (sourceObject, targetName, fromName) => {
         .forMember("id", function (opts) {
           opts.mapFrom("_id");
         })
-        .forMember("firstName", function (opts) {
-          opts.mapFrom("first_name");
-        })
-        .forMember("lastName", function (opts) {
-          opts.mapFrom("last_name");
+        .forMember("displayName", function (opts) {
+          console.log(opts);
+          return `${opts.sourceObject.last_name} ${opts.sourceObject.first_name}`;
         })
         .forMember("companyName", function (opts) {
           opts.mapFrom("company_name");

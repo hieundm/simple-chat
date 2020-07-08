@@ -220,9 +220,7 @@ const ChatBox = (_) => {
           <Modal.Title>Modal heading</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="p-2">
-            <FriendList></FriendList>
-          </div>
+          <FriendList></FriendList>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
