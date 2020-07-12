@@ -13,61 +13,61 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import "./helpers/Extensions";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <SimpleChatProvider>
-        <AuthenticateToRedirect></AuthenticateToRedirect>
-      </SimpleChatProvider>
-    </BrowserRouter>
-  );
+	return (
+		<BrowserRouter>
+			<SimpleChatProvider>
+				<AuthenticateToRedirect></AuthenticateToRedirect>
+			</SimpleChatProvider>
+		</BrowserRouter>
+	);
 }
 
 function AuthenticateToRedirect() {
-  const { state, dispatch } = React.useContext(SimpleChatContext);
-  const [isReady, setIsReady] = React.useState(false);
+	const { state, dispatch } = React.useContext(SimpleChatContext);
+	const [isReady, setIsReady] = React.useState(false);
 
-  React.useEffect(() => {
-    if (isReady === false) {
-      const credential = base.getCookie(config.cookie.credential);
+	React.useEffect(() => {
+		if (isReady === false) {
+			const credential = base.getCookie(config.cookie.credential);
 
-      const info = base.getCookie(config.cookie.userInfo);
+			const info = base.getCookie(config.cookie.userInfo);
 
-      if (credential) {
-        const userInfo = JSON.parse(unescape(atob(info)));
+			if (credential) {
+				const userInfo = JSON.parse(unescape(atob(info)));
 
-        if (userInfo) {
-          dispatch({
-            type: "signedIn",
-            payload: {
-              displayName: userInfo.name,
-            },
-          });
-        }
-      } else {
-      }
+				if (userInfo) {
+					dispatch({
+						type: "signedIn",
+						payload: {
+							displayName: userInfo.name,
+						},
+					});
+				}
+			} else {
+			}
 
-      setIsReady(true);
-    }
-  }, []);
-  return (
-    <React.Fragment>
-      {state.hasLogged === true ? (
-        <ChatBox></ChatBox>
-      ) : (
-        <Switch>
-          <Route exact path={["/", "/login"]}>
-            <Login />
-          </Route>
-          <Route path="/forgot-password">
-            <ForgotPassword />
-          </Route>
-          <Route path="/register">
-            <Register />
-          </Route>
-        </Switch>
-      )}
-    </React.Fragment>
-  );
+			setIsReady(true);
+		}
+	}, []);
+	return (
+		<React.Fragment>
+			{state.hasLogged === true ? (
+				<ChatBox></ChatBox>
+			) : (
+				<Switch>
+					<Route path={["/", "/login"]}>
+						<Login />
+					</Route>
+					<Route path="/forgot-password">
+						<ForgotPassword />
+					</Route>
+					<Route path="/register">
+						<Register />
+					</Route>
+				</Switch>
+			)}
+		</React.Fragment>
+	);
 }
 
 export default App;

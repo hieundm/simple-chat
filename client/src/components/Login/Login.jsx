@@ -34,6 +34,12 @@ const Login = () => {
     },
   };
 
+  const onSubmit = async (event) => {
+    event.preventDefault();
+
+    signIn(formData.email, formData.password);
+  };
+
   return (
     <div className="py-5 login-form">
       <div className="login-form__wrapper">
@@ -50,34 +56,36 @@ const Login = () => {
               </Col>
               <Col md={6}>
                 <h3>Member Login</h3>
-                <div className="form-group">
-                  <div className="prepend">
-                    <i className="fas fa-user"></i>
+                <form onSubmit={(event) => onSubmit(event)}>
+                  <div className="form-group">
+                    <div className="prepend">
+                      <i className="fas fa-user"></i>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Email"
+                      onChange={(event) => onChange.email(event)}
+                    />
                   </div>
-                  <input
-                    type="text"
-                    placeholder="Email"
-                    onChange={(event) => onChange.email(event)}
-                  />
-                </div>
-                <div className="form-group">
-                  <div className="prepend">
-                    <i className="fas fa-lock"></i>
+                  <div className="form-group">
+                    <div className="prepend">
+                      <i className="fas fa-lock"></i>
+                    </div>
+                    <input
+                      type="password"
+                      placeholder="Password"
+                      onChange={(event) => onChange.password(event)}
+                    />
                   </div>
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    onChange={(event) => onChange.password(event)}
-                  />
-                </div>
-                <div className="form-group">
-                  <button
-                    className="login-form__button-sign-in"
-                    onClick={() => signIn(formData.email, formData.password)}
-                  >
-                    Login
-                  </button>
-                </div>
+                  <div className="form-group">
+                    <button
+                      className="login-form__button-sign-in"
+                      type="submit"
+                    >
+                      Login
+                    </button>
+                  </div>
+                </form>
                 <div className="login-form__forgot-text">
                   <span className="txt1">Forgot</span>{" "}
                   <Link className="txt2" to="/forgot-password">

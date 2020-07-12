@@ -55,6 +55,14 @@ const FriendList = (_) => {
     }
   };
 
+  const addFriend = async (id) => {
+    const response = await base.post("/friend/add", { userId: id });
+
+    base.onResponse(response, (data) => {
+      console.log(data);
+    });
+  };
+
   return (
     <React.Fragment>
       <div className="search__input">
@@ -83,6 +91,7 @@ const FriendList = (_) => {
                 <button
                   className="friend__btn-add"
                   title="Click to send friend request."
+                  onClick={() => addFriend(x.id)}
                 >
                   <i className="far fa-plus"></i>
                 </button>

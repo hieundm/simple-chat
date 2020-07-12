@@ -1,5 +1,5 @@
-const config = require("../appsetting");
 const express = require("express");
+const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
 const utils = require("../helpers/utils");
@@ -7,11 +7,11 @@ const connection = require("../connection/connection");
 const { manipulate } = require("../helpers/function-base");
 const validateCode = require("../constants/auth/validate-code");
 const responseCode = require("../constants/response-code");
-const { hashPassword, validateEmail } = require("../business/crypto");
+const { hashPassword, validateEmail } = require("../helpers/crypto");
 
 connection.once("open", function () {});
 
-const rpUser = require("../repositories/user");
+const { User } = require("../models/user");
 
 /**
  * @swagger
@@ -50,67 +50,68 @@ const rpUser = require("../repositories/user");
  *        - Auth
  */
 router.post("/", async function (req, res) {
-  manipulate(async (responseData) => {
-    const { email, password } = req.body;
+	manipulate(async (responseData) => {
+		const { email, password } = req.body;
 
-    const code = validateAuthRequest(email, password);
+		const code = validateAuthRequest(email, password);
 
-    if (code !== validateCode.OK) {
-      res.send(responseData);
+		if (code !== validateCode.OK) {
+			res.send(responseData);
 
-      return;
-    }
+			return;
+		}
 
-    const query = rpUser.where({ email: email });
+		const data = await User.findOne({ email: email });
 
-    if (query) {
-      const data = await query.findOne();
+		const hashedPasswordWithSalt = hashPassword(password, data.salt);
 
-      const hashedPasswordWithSalt = hashPassword(password, data.salt);
+		if (hashedPasswordWithSalt !== data.password) {
+			responseData.data = "Fail";
 
-      if (hashedPasswordWithSalt !== data.password) {
-        responseData.data = "Fail";
+			res.send(responseData);
 
-        res.send(responseData);
+			return;
+		} else {
+			const displayName = utils.getDisplayName(data.first_name, data.last_name);
 
-        return;
-      } else {
-        const displayName = utils.getDisplayName(
-          data.first_name,
-          data.last_name
-        );
+			const token = jwt.sign(
+				{
+					sub: data.email,
+					name: displayName,
+				},
+				process.env.PRIVATE_KEY,
+				{ expiresIn: "7d" }
+			);
 
-        const token = jwt.sign(
-          {
-            sub: data.email,
-            name: displayName,
-          },
-          config.privateKey,
-          { expiresIn: "7d" }
-        );
+			await User.updateOne(
+				{ _id: mongoose.Types.ObjectId(data.id) },
+				{ last_online_at: Date.now(), is_online: true },
+				(error, doc) => {
+					console.log(error);
+				}
+			);
 
-        responseData.data = {
-          name: displayName,
-          token: token,
-        };
-      }
-    }
+			responseData.data = {
+				name: displayName,
+				token: token,
+			};
+		}
 
-    responseData.code = responseCode.success.value;
+		responseData.code = responseCode.success.value;
 
-    responseData.message = responseCode.success.description;
+		responseData.message = responseCode.success.description;
 
-    res.send(responseData);
-  });
+		res.send(responseData);
+	});
 });
 
 const validateAuthRequest = (email, password) => {
-  if (!email || email.length < 1 || !password || password.length < 1) {
-    return validateCode.ANY_EMPTY;
-  } else if (validateEmail(email) === false) {
-    return validateCode.INVALID_EMAIL;
-  }
-  return validateCode.OK;
+	if (!email || email.length < 1 || !password || password.length < 1) {
+		return validateCode.ANY_EMPTY;
+	} else if (validateEmail(email) === false) {
+		return validateCode.INVALID_EMAIL;
+	}
+	return validateCode.OK;
 };
 
 module.exports = router;

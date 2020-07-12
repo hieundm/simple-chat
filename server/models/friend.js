@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const friendSchema = new mongoose.Schema({
   user_id: {
-    type: "String",
+    type: "ObjectId",
     required: true,
   },
   user_friend_id: {
@@ -19,6 +19,6 @@ const friendSchema = new mongoose.Schema({
   },
 });
 
-const friendRepository = mongoose.model("friend", friendSchema);
+const friend = mongoose.model("friend", friendSchema);
 
-module.exports = friendRepository;
+module.exports = friend;

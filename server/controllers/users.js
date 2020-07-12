@@ -3,10 +3,10 @@ const router = express.Router();
 const connection = require("../connection/connection");
 
 connection.once("open", function () {
-  console.log("MongoDB database connection established successfully");
+	console.log("MongoDB database connection established successfully");
 });
 
-const rpUser = require("../repositories/user");
+const { User } = require("../models/user");
 
 /**
  * @swagger
@@ -20,21 +20,21 @@ const rpUser = require("../repositories/user");
  *        - Users
  */
 router.get("/getList", async function (req, res, next) {
-  const data = await getList();
+	const data = await getList();
 
-  if (data) {
-    res.send(data);
-  }
+	if (data) {
+		res.send(data);
+	}
 
-  res.send("respond with a resource");
+	res.send("respond with a resource");
 });
 
 const getList = async () => {
-  return new Promise((resolve) => {
-    const data = rpUser.find();
+	return new Promise((resolve) => {
+		const data = User.find();
 
-    resolve(data);
-  });
+		resolve(data);
+	});
 };
 
 module.exports = router;

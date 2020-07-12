@@ -1,16 +1,16 @@
-const createError = require("http-errors");
-const cors = require("cors");
-const express = require("express");
-const path = require("path");
-const cookieParser = require("cookie-parser");
-const jwt = require("./helpers/Jwt");
-const logger = require("morgan");
-const routes = require("./controllers/main-route");
-const swaggerDocument = require("./swagger.ts");
-const swaggerUi = require("swagger-ui-express");
-const swaggerJsDoc = require("swagger-jsdoc");
-
 require("dotenv").config();
+
+const cookieParser = require("cookie-parser"),
+	cors = require("cors"),
+	createError = require("http-errors"),
+	express = require("express"),
+	jwt = require("./helpers/Jwt").default,
+	logger = require("morgan"),
+	path = require("path"),
+	routes = require("./controllers/main-route"),
+	swaggerDocument = require("./swagger.ts"),
+	swaggerJsDoc = require("swagger-jsdoc"),
+	swaggerUi = require("swagger-ui-express");
 
 const app = express();
 
@@ -26,41 +26,37 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 const swaggerOption = {
-  swaggerDefinition: swaggerDocument,
-  apis: ["./controllers/*.js"],
+	swaggerDefinition: swaggerDocument,
+	apis: ["./controllers/*.js"],
 };
 
 const customOption = {
-  customCss:
-    "#swagger-ui .topbar {background-image: linear-gradient(to right top, #5ec282, #54be84, #4bba86, #41b588, #37b189, #2ead8b, #25a98c, #1ca58d, #12a08e, #099c8e, #02978e, #00928d);}",
-  swaggerOptions: {
-    docExpansion: "none",
-  },
+	customCss:
+		"#swagger-ui .topbar {background-image: linear-gradient(to right top, #5ec282, #54be84, #4bba86, #41b588, #37b189, #2ead8b, #25a98c, #1ca58d, #12a08e, #099c8e, #02978e, #00928d);} .swagger-ui * {font-family: calibri !important;}",
+	swaggerOptions: {
+		docExpansion: "none",
+	},
 };
 
 const swaggerDoc = swaggerJsDoc(swaggerOption);
 app.use("/", routes);
 
-app.use(
-  "/readme/index",
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerDoc, customOption)
-);
+app.use("/readme", swaggerUi.serve, swaggerUi.setup(swaggerDoc, customOption));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  next(createError(404));
+	next(createError(404));
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+	// render the error page
+	res.status(err.status || 500);
+	res.render("error");
 });
 
 module.exports = app;

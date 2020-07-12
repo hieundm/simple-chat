@@ -3,11 +3,11 @@ const router = express.Router();
 const connection = require("../connection/connection");
 const { manipulate } = require("../helpers/function-base");
 const responseCode = require("../constants/response-code");
-const rpUser = require("../repositories/user");
-const { hashPassword, validateEmail } = require("../business/crypto");
+const { User } = require("../models/user");
+const { hashPassword, validateEmail } = require("../helpers/crypto");
 const { randomString } = require("../helpers/Utils");
 
-connection.once("open", function () { });
+connection.once("open", function () {});
 
 /**
  * @swagger
@@ -46,37 +46,37 @@ connection.once("open", function () { });
  *        - Account
  */
 router.post("/forgot-password", async (req, res) => {
-  await manipulate(async (responseData) => {
-    const { email, newPassword } = req.body;
+	await manipulate(async (responseData) => {
+		const { email, newPassword } = req.body;
 
-    const user = await rpUser.findOne({ email: email });
+		const user = await User.findOne({ email: email });
 
-    if (!user) {
-      responseData.code = responseCode.forbidden.value;
-      responseData.message = responseCode.forbidden.description;
-      res.send(responseData);
+		if (!user) {
+			responseData.code = responseCode.forbidden.value;
+			responseData.message = responseCode.forbidden.description;
+			res.send(responseData);
 
-      return;
-    }
+			return;
+		}
 
-    const newHashedPassword = hashPassword(newPassword, user.salt);
+		const newHashedPassword = hashPassword(newPassword, user.salt);
 
-    try {
-      user.password = newHashedPassword;
+		try {
+			user.password = newHashedPassword;
 
-      user.save();
-    } catch (error) {
-      responseData.code = responseCode.failed.value;
-      responseData.message = responseCode.failed.description;
+			user.save();
+		} catch (error) {
+			responseData.code = responseCode.failed.value;
+			responseData.message = responseCode.failed.description;
 
-      res.send(error);
-    }
+			res.send(error);
+		}
 
-    responseData.code = responseCode.success.value;
-    responseData.message = responseCode.success.description;
+		responseData.code = responseCode.success.value;
+		responseData.message = responseCode.success.description;
 
-    res.send(responseData);
-  });
+		res.send(responseData);
+	});
 });
 
 /**
@@ -133,59 +133,71 @@ router.post("/forgot-password", async (req, res) => {
  *        - Account
  */
 router.post("/register", async (req, res) => {
-  await manipulate(async (responseData) => {
-    const {
-      first_name,
-      last_name,
-      company,
-      address,
-      city,
-      phone1,
-      email,
-      password,
-    } = req.body;
+	await manipulate(async (responseData) => {
+		const {
+			first_name,
+			last_name,
+			company,
+			address,
+			city,
+			phone1,
+			email,
+			password,
+		} = req.body;
 
-    if (
-      !first_name ||
-      first_name.length < 1 ||
-      !last_name ||
-      last_name.length < 1 ||
-      !password ||
-      password.length < 1 ||
-      validateEmail(email) === false
-    ) {
-      responseData.code = responseCode.invalidParam.value;
-      responseData.message = responseCode.invalidParam.description;
+		if (
+			!first_name ||
+			first_name.length < 1 ||
+			!last_name ||
+			last_name.length < 1 ||
+			!password ||
+			password.length < 1 ||
+			validateEmail(email) === false
+		) {
+			responseData.code = responseCode.invalidParam.value;
+			responseData.message = responseCode.invalidParam.description;
 
-      res.send(responseData);
+			res.send(responseData);
 
-      return;
-    }
+			return;
+		}
 
-    const salt = randomString(8);
+		const existedUser = User.findOne({ email: email });
 
-    const hashedPassword = hashPassword(password, salt);
+		if (existedUser) {
+			responseData.code = responseCode.failed.value;
+			responseData.message =
+				"This email existed, please use another email to register";
 
-    await rpUser.create({
-      first_name,
-      last_name,
-      company_name: company,
-      address,
-      city,
-      phone1,
-      email,
-      salt,
-      password: hashedPassword,
-    });
+			res.send(responseData);
 
-    const newUser = await rpUser.findOne({ email: email });
+			return;
+		}
 
-    responseData.code = responseCode.success.value;
-    responseData.message = responseCode.success.description;
-    responseData.data = newUser;
+		const salt = randomString(8);
 
-    res.send(responseData);
-  });
+		const hashedPassword = hashPassword(password, salt);
+
+		await User.create({
+			first_name,
+			last_name,
+			company_name: company,
+			address,
+			city,
+			phone1,
+			email,
+			salt,
+			password: hashedPassword,
+		});
+
+		const newUser = await User.findOne({ email: email });
+
+		responseData.code = responseCode.success.value;
+		responseData.message = responseCode.success.description;
+		responseData.data = newUser;
+
+		res.send(responseData);
+	});
 });
 
 module.exports = router;
