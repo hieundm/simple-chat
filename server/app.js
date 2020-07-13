@@ -4,7 +4,8 @@ const cookieParser = require("cookie-parser"),
 	cors = require("cors"),
 	createError = require("http-errors"),
 	express = require("express"),
-	jwt = require("./helpers/Jwt").default,
+	handleUnAuthorize = require("./helpers/jwt").handleUnAuthorize,
+	jwt = require("./helpers/jwt").default,
 	logger = require("morgan"),
 	path = require("path"),
 	routes = require("./controllers/main-route"),
@@ -14,7 +15,6 @@ const cookieParser = require("cookie-parser"),
 
 const app = express();
 
-// view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 app.use(cors());
@@ -24,6 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(handleUnAuthorize);
 
 const swaggerOption = {
 	swaggerDefinition: swaggerDocument,

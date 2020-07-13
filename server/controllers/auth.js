@@ -93,6 +93,7 @@ router.post("/", async function (req, res) {
 
 			responseData.data = {
 				name: displayName,
+				email: data.email,
 				token: token,
 			};
 		}

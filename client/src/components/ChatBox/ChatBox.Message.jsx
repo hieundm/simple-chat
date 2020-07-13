@@ -1,28 +1,44 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
 import UserOverview from "./UserOverview";
 import FriendList from "./FriendList";
-import socketIOClient from "socket.io-client";
-import * as config from "../../appsetting.json";
 import { Button, Modal } from "react-bootstrap";
+import { SimpleChatContext } from "../../context";
+import { base } from "../../helpers/Utils";
+import * as config from "../../appsetting.json";
+import * as _ from "lodash";
 
 const Message = () => {
-	const [content, setContent] = React.useState("");
-	const [messages, updateMessages] = React.useState([]);
-	const [socket, setSocket] = React.useState(null);
-	const [YOUR_ID, SET_YOUR_ID] = React.useState(Math.floor(Math.random() * 10));
-	const [versionNo, updateVersionNo] = React.useState(0);
-	const [show, setShow] = React.useState(false);
-	const [canShowActionPanel, toggleActionPanel] = React.useState(false);
+	const [content, setContent] = useState("");
+	const [messages, updateMessages] = useState([]);
+	const [YOUR_ID, SET_YOUR_ID] = useState("");
+	const [versionNo, updateVersionNo] = useState(0);
+	const [show, setShow] = useState(false);
+	const [canShowActionPanel, toggleActionPanel] = useState(false);
+
+	const { socket } = useContext(SimpleChatContext);
+
+	//#region methods
+
+	const handleClose = () => setShow(false);
+
+	const handleSocket = () => {
+		socket.on("onReceiveMessage", (data) => {
+			console.log(messages);
+			onProcessData(data);
+		});
+
+		socket.on("onGetUserId", () => {
+			socket.emit("onReceiveUserId", { userId: YOUR_ID });
+		});
+	};
+
+	const handleShow = () => setShow(true);
 
 	const onClickToggleAction = () => {
 		toggleActionPanel((prev) => {
 			return !prev;
 		});
 	};
-	const handleClose = () => setShow(false);
-
-	const handleShow = () => setShow(true);
-
 	const onChangeMessageTextbox = (event) => {
 		const { value } = event.target;
 
@@ -66,19 +82,31 @@ const Message = () => {
 		updateMessages((prev) => temp);
 	};
 
-	React.useEffect(() => {
-		if (!socket) {
-			const _socket = socketIOClient(config.apiHost);
-			_socket.on("onReceiveMessage", (data) => {
-				console.log(messages);
-				onProcessData(data);
-			});
+	//#endregion
 
-			setSocket(_socket);
+	useEffect(() => {
+		if (_.isEmpty(YOUR_ID) === true) {
+			const cookie = base.getCookie(config.cookie.userInfo);
+
+			if (_.isEmpty(cookie) === true) {
+				return;
+			}
+
+			const user = JSON.parse(unescape(atob(cookie)));
+
+			if (_.isNull(user) === true || _.isUndefined(user) === true) {
+				return;
+			}
+		}
+	}, []);
+
+	useEffect(() => {
+		if (socket) {
+			handleSocket();
 		}
 	}, [versionNo]);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		console.log(messages);
 	}, [messages]);
 
