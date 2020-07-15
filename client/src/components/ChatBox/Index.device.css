@@ -1,59 +1,83 @@
 @media screen and (max-width: 400px) {
-  .messenger__main-action,
-  .messenger__message-list {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background-color: white;
-    transition: left ease-in-out 0.3s;
-    left: -100%;
-    top: 0;
-  }
+	html,
+	body {
+		width: 100%;
+	}
 
-  .messenger__main-action.show,
-  .messenger__message-list.show {
-    left: 0;
-  }
+	.messenger__main-action,
+	.messenger__message-list {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		z-index: 1;
+		background-color: white;
+		transition: left ease-in-out 0.3s;
+		left: -100%;
+		top: 0;
+	}
 
-  .messenger__container {
-    display: block;
-  }
+	.messenger__main-action.show,
+	.messenger__message-list.show {
+		left: 0;
+	}
 
-  .messenger__toggle-action-button {
-    position: absolute;
-    top: 50%;
-    right: 15px;
-    transform: translateY(-50%);
-    height: 40px;
-    width: 40px;
-    background: none;
-    font-size: x-large;
-    outline: none;
-    transition: background-color ease-in-out 0.3s;
-  }
+	.messenger__container {
+		display: block;
+	}
 
-  .messenger__toggle-action-button:focus {
-    outline: none;
-    background-color: #efefef;
-  }
+	.messenger__toggle-action-button {
+		position: absolute;
+		top: 50%;
+		right: 15px;
+		transform: translateY(-50%);
+		height: 40px;
+		width: 40px;
+		background: none;
+		font-size: x-large;
+		outline: none;
+		transition: background-color ease-in-out 0.3s;
+	}
 
-  .messenger__chat-box .top-nav {
-    position: relative;
-  }
+	.messenger__toggle-action-button:focus {
+		outline: none;
+		background-color: #efefef;
+	}
 
-  .messenger__close-button {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 40px;
-    width: 100%;
-  }
+	.messenger__chat-box .top-nav {
+		position: relative;
+	}
+
+	.messenger__close-button {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		height: 40px;
+		width: 100%;
+	}
+
+	.messenger__main-body {
+		margin-left: unset;
+		overflow-y: auto;
+	}
+
+	.chat-box__friend .chat-box__body {
+		display: block;
+	}
+
+	.chat-box__friend .chat-box__friend-list {
+		margin-left: unset;
+	}
+
+	.chat-box__friend .chat-box__friend-request {
+		position: static;
+		width: 100%;
+		height: fit-content;
+	}
 }
 
 @media screen and (min-width: 401px) {
-  .messenger__toggle-action-button,
-  .messenger__close-button {
-    display: none;
-  }
+	.messenger__toggle-action-button,
+	.messenger__close-button {
+		display: none;
+	}
 }

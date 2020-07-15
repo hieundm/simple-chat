@@ -22,7 +22,7 @@ const Message = () => {
 	const handleClose = () => setShow(false);
 
 	const handleSocket = () => {
-		socket.on("onReceiveMessage", (data) => {
+		socket.on("onReceiveMessage", data => {
 			console.log(messages);
 			onProcessData(data);
 		});
@@ -35,11 +35,11 @@ const Message = () => {
 	const handleShow = () => setShow(true);
 
 	const onClickToggleAction = () => {
-		toggleActionPanel((prev) => {
+		toggleActionPanel(prev => {
 			return !prev;
 		});
 	};
-	const onChangeMessageTextbox = (event) => {
+	const onChangeMessageTextbox = event => {
 		const { value } = event.target;
 
 		setContent(value);
@@ -54,7 +54,7 @@ const Message = () => {
 		setContent("");
 	};
 
-	const onProcessData = (data) => {
+	const onProcessData = data => {
 		const temp = messages;
 
 		switch (data.userId) {
@@ -79,7 +79,7 @@ const Message = () => {
 
 		updateVersionNo(new Date().getTime());
 
-		updateMessages((prev) => temp);
+		updateMessages(prev => temp);
 	};
 
 	//#endregion
@@ -98,20 +98,20 @@ const Message = () => {
 				return;
 			}
 		}
-	}, []);
+	}, [YOUR_ID]);
 
 	useEffect(() => {
 		if (socket) {
 			handleSocket();
 		}
-	}, [versionNo]);
+	}, [handleSocket, socket, versionNo]);
 
 	useEffect(() => {
 		console.log(messages);
 	}, [messages]);
 
 	return (
-		<React.Fragment>
+		<div className="messenger__main-body messenger__message-container">
 			<div className="messenger__message-list">
 				<div className="messenger__header">
 					<div className="title">Chats</div>
@@ -215,7 +215,7 @@ const Message = () => {
 							type="text"
 							placeholder="Write a message"
 							value={content}
-							onChange={(event) => onChangeMessageTextbox(event)}
+							onChange={event => onChangeMessageTextbox(event)}
 						/>
 						<button
 							className="messenger__button bg-primary"
@@ -241,7 +241,7 @@ const Message = () => {
 					</Button>
 				</Modal.Footer>
 			</Modal>
-		</React.Fragment>
+		</div>
 	);
 };
 

@@ -48,7 +48,7 @@ connection.once("open", function () {});
  *        - Friend
  */
 router.post("/find", async (req, res) => {
-	await manipulate(async (responseData) => {
+	await manipulate(async responseData => {
 		const { email, phone, lastUserId } = req.body;
 
 		if ((!email && !phone) || (email && validateEmail(email) === false)) {
@@ -84,7 +84,7 @@ router.post("/find", async (req, res) => {
 		let length = 0;
 		try {
 			if (users && (length = users.length) > 0) {
-				users.forEach((user) => {
+				users.forEach(user => {
 					temp.push(mapper(user, "Get"));
 				});
 			}
@@ -130,7 +130,7 @@ router.post("/find", async (req, res) => {
  *        - Friend
  */
 router.post("/send-request", authenticateJWT, async (req, res) => {
-	await manipulate(async (responseData) => {
+	await manipulate(async responseData => {
 		const { sub } = req.user;
 		const { toUserId } = req.body;
 
@@ -162,7 +162,7 @@ router.post("/send-request", authenticateJWT, async (req, res) => {
 			to_user_id: toUserId,
 		});
 
-		newFriend.save((error) => {
+		newFriend.save(error => {
 			if (error) {
 				responseData.code = responseCode.failed.value;
 				responseData.message = responseCode.failed.description;
@@ -199,7 +199,7 @@ router.post("/send-request", authenticateJWT, async (req, res) => {
  *        - Friend
  */
 router.get("/list", authenticateJWT, async (req, res) => {
-	await manipulate(async (responseData) => {
+	await manipulate(async responseData => {
 		const { sub } = req.user;
 
 		if (!sub) {
@@ -236,7 +236,7 @@ router.get("/list", authenticateJWT, async (req, res) => {
 		}
 
 		const lstYourRequest = await getUserListByIds(
-			lstFriendRequest.map((x) => x.from_user_id).join(","),
+			lstFriendRequest.map(x => x.from_user_id).join(","),
 			{ first_name: 1, last_name: 1 }
 		);
 
@@ -248,7 +248,7 @@ router.get("/list", authenticateJWT, async (req, res) => {
 
 		const temp = [];
 
-		lstYourRequest.forEach((user) => {
+		lstYourRequest.forEach(user => {
 			for (
 				let index = 0, length = lstFriendRequest.length;
 				index < length;

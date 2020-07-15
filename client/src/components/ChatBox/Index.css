@@ -1,6 +1,4 @@
 .messenger__container {
-	display: grid;
-	grid-template-columns: minmax(0, 100px) minmax(0, 350px) 1fr;
 	height: 100%;
 	background-color: white;
 }
@@ -11,6 +9,18 @@
 	flex-direction: column;
 	align-items: center;
 	padding: 30px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	background: white;
+	height: 100%;
+}
+
+.messenger__main-body {
+	margin-left: 100px;
+	height: 100%;
+	overflow: hidden;
 }
 
 .messenger__chat-box {
@@ -276,4 +286,9 @@
 
 .friend__btn-add:hover {
 	background-color: #efefef;
+}
+
+.messenger__message-container {
+	display: grid;
+	grid-template-columns: max(350px) 1fr;
 }
