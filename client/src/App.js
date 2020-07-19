@@ -6,6 +6,7 @@ import Login from "./components/Login/index";
 import ForgotPassword from "./components/ForgotPassword";
 import Register from "./components/Register";
 import ChatBox from "./components/ChatBox";
+import FriendService from './services/Friend';
 import { base } from "./helpers/Utils";
 import * as config from "./appsetting.json";
 import { SimpleChatProvider, SimpleChatContext } from "./context";
@@ -27,15 +28,8 @@ function AuthenticateToRedirect() {
 	const { state, socket, dispatch } = React.useContext(SimpleChatContext);
 	const [isReady, setIsReady] = React.useState(false);
 
-	const handleSocket = (email) => {
-		socket.emit("onAskNewRequest", email);
-
-		socket.on("onReceiveTotalNewRequest", data => {
-			dispatch({
-				type: "updateTotalRequest",
-				payload: data,
-			});
-		});
+	const handleSocket = async (email) => {
+		await FriendService.getTotalRequest({socket, dispatch, email});
 	};
 
 	React.useEffect(() => {

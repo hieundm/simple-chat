@@ -245,7 +245,7 @@ router.get("/list", authenticateJWT, async (req, res) => {
 		}
 
 		const lstUser = await User.getUserListByIds(
-			lstFriendRequest.map(x => x.receiver_id).join(","),
+			lstFriendRequest.map(x => x.sender_id).join(","),
 			{ first_name: 1, last_name: 1, avatar: 1 }
 		);
 
@@ -263,7 +263,7 @@ router.get("/list", authenticateJWT, async (req, res) => {
 				index < length;
 				index++
 			) {
-				if (_.isEqual(user.id, lstFriendRequest[index].receiver_id.toString()) === true) {
+				if (_.isEqual(user.id, lstFriendRequest[index].sender_id.toString()) === true) {
 					user.is_success = lstFriendRequest[index].is_success;
 					user.is_deleted = lstFriendRequest[index].is_deleted;
 
