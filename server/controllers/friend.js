@@ -1,17 +1,18 @@
-const express = require("express");
-const router = express.Router();
-const mongoose = require("mongoose");
-const mapper = require("../AutoMapper");
-const connection = require("../connection/connection");
-const { manipulate } = require("../helpers/function-base");
-const responseCode = require("../constants/response-code");
-const { validateEmail } = require("../helpers/crypto");
-const getList = require("../models/shared/get-list");
-const Friend = require("../models/friend");
-const FriendRequest = require("../models/friend-request");
-const { User, getUserListByIds } = require("../models/user");
-const { authenticateJWT } = require("../helpers/jwt");
-connection.once("open", function () {});
+const _ = require("lodash"),
+	express = require("express"),
+	router = express.Router(),
+	mongoose = require("mongoose"),
+	mapper = require("../AutoMapper"),
+	connection = require("../connection/connection"),
+	{ manipulate } = require("../helpers/function-base"),
+	responseCode = require("../constants/response-code"),
+	{ validateEmail } = require("../helpers/crypto"),
+	getList = require("../models/shared/get-list"),
+	Friend = require("../models/friend"),
+	FriendRequest = require("../models/friend-request"),
+	User = require("../models/user"),
+	{ authenticateJWT } = require("../helpers/jwt");
+connection.once("open", function () { });
 
 /**
  * @swagger
@@ -39,7 +40,7 @@ connection.once("open", function () {});
  *                type: integer
  *                description: response code
  *              message:
- *                type: string
+ *                type: str.ing
  *                description: response message
  *              data:
  *                type: object
@@ -47,9 +48,19 @@ connection.once("open", function () {});
  *    tags:
  *        - Friend
  */
-router.post("/find", async (req, res) => {
+router.post("/find", authenticateJWT, async (req, res) => {
 	await manipulate(async responseData => {
 		const { email, phone, lastUserId } = req.body;
+
+		if (req.user.sub === email) {
+			responseData.code = responseCode.success.value;
+			responseData.message = responseCode.success.description;
+			responseData.data = getList(0, []);
+
+			res.send(responseData);
+
+			return;
+		}
 
 		if ((!email && !phone) || (email && validateEmail(email) === false)) {
 			responseData.code = responseCode.invalidParam.value;
@@ -74,7 +85,7 @@ router.post("/find", async (req, res) => {
 			});
 		}
 
-		users = await User.find(query).select({
+		users = await User.instance().find(query).select({
 			first_name: 1,
 			_id: 1,
 			last_name: 1,
@@ -88,7 +99,7 @@ router.post("/find", async (req, res) => {
 					temp.push(mapper(user, "Get"));
 				});
 			}
-		} catch (error) {}
+		} catch (error) { }
 
 		responseData.code = responseCode.success.value;
 		responseData.message = responseCode.success.description;
@@ -214,7 +225,7 @@ router.get("/list", authenticateJWT, async (req, res) => {
 		responseData.code = responseCode.success.value;
 		responseData.message = responseCode.success.description;
 
-		const user = await User.findOne({ email: sub });
+		const user = await User.instance().findOne({ email: sub });
 
 		if (!user) {
 			responseData.code = responseCode.invalidParam.value;
@@ -225,9 +236,7 @@ router.get("/list", authenticateJWT, async (req, res) => {
 			return;
 		}
 
-		const lstFriendRequest = await FriendRequest.find({
-			to_user_id: mongoose.Types.ObjectId(user.id),
-		});
+		const lstFriendRequest = await FriendRequest.getListByReceiverId(user.id);
 
 		if (!lstFriendRequest || lstFriendRequest.length < 1) {
 			res.send(responseData);
@@ -235,12 +244,12 @@ router.get("/list", authenticateJWT, async (req, res) => {
 			return;
 		}
 
-		const lstYourRequest = await getUserListByIds(
-			lstFriendRequest.map(x => x.from_user_id).join(","),
-			{ first_name: 1, last_name: 1 }
+		const lstUser = await User.getUserListByIds(
+			lstFriendRequest.map(x => x.receiver_id).join(","),
+			{ first_name: 1, last_name: 1, avatar: 1 }
 		);
 
-		if (!lstYourRequest || lstYourRequest.length < 1) {
+		if (!lstUser || lstUser.length < 1) {
 			res.send(responseData);
 
 			return;
@@ -248,13 +257,13 @@ router.get("/list", authenticateJWT, async (req, res) => {
 
 		const temp = [];
 
-		lstYourRequest.forEach(user => {
+		lstUser.forEach(user => {
 			for (
 				let index = 0, length = lstFriendRequest.length;
 				index < length;
 				index++
 			) {
-				if (user.id === lstFriendRequest[index].from_user_id.toString()) {
+				if (_.isEqual(user.id, lstFriendRequest[index].receiver_id.toString()) === true) {
 					user.is_success = lstFriendRequest[index].is_success;
 					user.is_deleted = lstFriendRequest[index].is_deleted;
 

@@ -1,0 +1,70 @@
+.animated-place-holder {
+	position: relative;
+	animation-duration: 1s;
+	animation-fill-mode: forwards;
+	animation-iteration-count: infinite;
+	animation-name: place-holder-shimmer;
+	animation-timing-function: linear;
+	background: #f6f7f8;
+	background: #eeeeee;
+	background: -webkit-gradient(
+		linear,
+		left top,
+		right top,
+		color-stop(8%, #eeeeee),
+		color-stop(18%, #dddddd),
+		color-stop(33%, #eeeeee)
+	);
+	background: -webkit-linear-gradient(
+		left,
+		#eeeeee 8%,
+		#dddddd 18%,
+		#eeeeee 33%
+	);
+	background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+	background-size: 800px 104px;
+}
+
+@-webkit-keyframes simple-chat-ico-spin {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+
+@keyframes simple-chat-ico-spin {
+	0% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+	}
+
+	100% {
+		-webkit-transform: rotate(359deg);
+		transform: rotate(359deg);
+	}
+}
+
+@-webkit-keyframes place-holder-shimmer {
+	0% {
+		background-position: -468px 0;
+	}
+
+	100% {
+		background-position: 468px 0;
+	}
+}
+
+@keyframes place-holder-shimmer {
+	0% {
+		background-position: -468px 0;
+	}
+
+	100% {
+		background-position: 468px 0;
+	}
+}

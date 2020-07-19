@@ -69,8 +69,10 @@ const autoMapper = (sourceObject, targetName, fromName) => {
 				.forMember("userId", function (opts) {
 					opts.mapFrom("_id");
 				})
+				.forMember("avatarUrl", function (opts) {
+					opts.mapFrom("avatar");
+				})
 				.forMember("displayName", function (opts) {
-					console.log(opts);
 					return `${opts.sourceObject.last_name} ${opts.sourceObject.first_name}`;
 				})
 				.forMember("isSuccess", function (opts) {

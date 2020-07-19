@@ -58,6 +58,7 @@
 	box-shadow: none;
 	transition: all ease-in-out 0.3s;
 	color: black;
+	position: relative;
 }
 
 .messenger__action-button:hover {
@@ -67,6 +68,21 @@
 
 .messenger__action-button.active {
 	color: #0a80ff;
+}
+
+
+.messenger__total-request-bubble{
+	position: absolute;
+    top: 25px;
+    right: -5px;
+    font-size: 12px;
+    color: white;
+    background: #f50000;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    border-radius: 50%;
+    text-align: center;
 }
 
 .messenger__button {
@@ -110,6 +126,11 @@
 	width: 50px;
 	overflow: hidden;
 	position: relative;
+}
+
+.message-item__avatar .image {
+	height: 50px;
+	width: 50px;
 }
 
 .message-item__avatar .user-status {
@@ -291,4 +312,6 @@
 .messenger__message-container {
 	display: grid;
 	grid-template-columns: max(350px) 1fr;
+	grid-template-rows: 1fr;
+	height: 100%;
 }

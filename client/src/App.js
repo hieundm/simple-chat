@@ -11,6 +11,7 @@ import * as config from "./appsetting.json";
 import { SimpleChatProvider, SimpleChatContext } from "./context";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import "./helpers/Extensions";
+import "./contents/simple-chat-animation.css";
 
 function App() {
 	return (
@@ -23,8 +24,19 @@ function App() {
 }
 
 function AuthenticateToRedirect() {
-	const { state, dispatch } = React.useContext(SimpleChatContext);
+	const { state, socket, dispatch } = React.useContext(SimpleChatContext);
 	const [isReady, setIsReady] = React.useState(false);
+
+	const handleSocket = (email) => {
+		socket.emit("onAskNewRequest", email);
+
+		socket.on("onReceiveTotalNewRequest", data => {
+			dispatch({
+				type: "updateTotalRequest",
+				payload: data,
+			});
+		});
+	};
 
 	React.useEffect(() => {
 		if (isReady === false) {
@@ -39,33 +51,36 @@ function AuthenticateToRedirect() {
 					dispatch({
 						type: "signedIn",
 						payload: {
+							email: userInfo.email,
 							displayName: userInfo.name,
 						},
 					});
+
+					handleSocket(userInfo.email);
 				}
 			} else {
 			}
 
 			setIsReady(true);
 		}
-	}, []);
+	}, [dispatch, isReady]);
 	return (
 		<React.Fragment>
 			{state.hasLogged === true ? (
 				<ChatBox></ChatBox>
 			) : (
-				<Switch>
-					<Route path={["/", "/login"]}>
-						<Login />
-					</Route>
-					<Route path="/forgot-password">
-						<ForgotPassword />
-					</Route>
-					<Route path="/register">
-						<Register />
-					</Route>
-				</Switch>
-			)}
+					<Switch>
+						<Route path={["/", "/login"]}>
+							<Login />
+						</Route>
+						<Route path="/forgot-password">
+							<ForgotPassword />
+						</Route>
+						<Route path="/register">
+							<Register />
+						</Route>
+					</Switch>
+				)}
 		</React.Fragment>
 	);
 }

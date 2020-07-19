@@ -7,8 +7,14 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				hasLogged: true,
+				email: action.payload.email,
 				displayName: action.payload.displayName,
 			};
+		case "updateTotalRequest":
+			return {
+				...state,
+				totalRequest: action.payload
+			}
 		default:
 			return;
 	}
@@ -16,7 +22,9 @@ const reducer = (state, action) => {
 
 const initialState = {
 	hasLogged: false,
+	email: "",
 	displayName: "",
+	totalRequest: 0
 };
 
 const SimpleChatContext = React.createContext(initialState);

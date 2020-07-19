@@ -1,12 +1,40 @@
-import React from "react";
-import UserOverview from "./UserOverview";
+import React, { useEffect, useState, useContext } from "react";
+import UserOverview, { UserPlaceHolder } from "./UserOverview";
+import SearchFriend from "./ChatBox.SearchFriendPanel";
 import { Row, Col } from "react-bootstrap";
-import "./Chatbox.Friend.css";
+import "./ChatBox.Friend.css";
+import { base } from "../../helpers/Utils";
 
 const FriendList = () => {
-	//const [friends, setFriends] = React.useState(null);
+	const [requestIsLoading, setRequestIsLoading] = useState(true);
+	const [friendRequests, setFriendRequests] = useState([]);
 
-	const init = async () => {};
+	const getRequestList = async () => {
+		setRequestIsLoading(true);
+		try {
+			const response = await base.get("/friend/list");
+
+			base.onResponse(response, data => {
+				const lstFriendRequest = [];
+
+				data.forEach(x => {
+					lstFriendRequest.push(x);
+				});
+
+				setFriendRequests(lstFriendRequest);
+			});
+		} finally {
+			setRequestIsLoading(false);
+		}
+	};
+
+	const init = async () => {
+		await getRequestList();
+	};
+
+	useEffect(() => {
+		init();
+	}, []);
 
 	const friends = [
 		{
@@ -23,54 +51,68 @@ const FriendList = () => {
 		},
 	];
 
-	const friendRequests = [
-		{
-			avatarUrl:
-				"https://i.pinimg.com/originals/4a/5b/2e/4a5b2e54af1a42287e7d0af80fdc60c3.jpg",
-			name: "Nancy",
-		},
-		{
-			avatarUrl: `https://i.pinimg.com/originals/37/e8/6c/37e86c820cebc8f420e3f88f103fdc08.jpg`,
-			name: "Jisoo",
-		},
-		{
-			avatarUrl: `https://image2.tin247.com/pictures/2020/04/24/xrh1587735690.jpg`,
-			name: "Lisa",
-		},
-	];
+	// const friendRequests = [
+	// 	{
+	// 		avatarUrl:
+	// 			"https://i.pinimg.com/originals/4a/5b/2e/4a5b2e54af1a42287e7d0af80fdc60c3.jpg",
+	// 		name: "Nancy",
+	// 	},
+	// 	{
+	// 		avatarUrl: `https://i.pinimg.com/originals/37/e8/6c/37e86c820cebc8f420e3f88f103fdc08.jpg`,
+	// 		name: "Jisoo",
+	// 	},
+	// 	{
+	// 		avatarUrl: `https://image2.tin247.com/pictures/2020/04/24/xrh1587735690.jpg`,
+	// 		name: "Lisa",
+	// 	},
+	// ];
 
 	return (
-		<div className="chat-box__friend messenger__main-body">
-			<div className="chat-box__header">Friends</div>
+		<SearchFriend.Provider>
+			<div className="chat-box__friend">
+			<div className="chat-box__header">
+				Friends
+				<SearchFriend.ToggleButton></SearchFriend.ToggleButton>
+			</div>
 			<div className="chat-box__body">
 				<div className="chat-box__friend-request">
-					{friendRequests.map((friend, index) => (
-						<UserOverview
-							key={index}
-							avatarUrl={friend.avatarUrl}
-							name={friend.name}
-							className="chat-box__friend-request-item"
-							overviewChild={
-								<div className="pl-2">
-									<div className="user-overview__name">{friend.name}</div>
-									<div className="created-at pt-1">16:04 15/05/2020</div>
-									<div className="actions pt-2">
-										<button className="button-accept border-rounded">
-											Accept
-										</button>
-										<button className="button-delete border-rounded">
-											Delete
-										</button>
+					{requestIsLoading === false ? (
+						friendRequests.map((friend, index) => (
+							<UserOverview
+								key={index}
+								avatarUrl={friend.avatarUrl}
+								name={friend.displayName}
+								className="chat-box__friend-request-item"
+								overviewChild={
+									<div className="pl-2">
+										<div className="user-overview__name">
+											{friend.displayName}
+										</div>
+										<div className="created-at pt-1">16:04 15/05/2020</div>
+										<div className="actions pt-2">
+											<button className="button-accept border-rounded">
+												Accept
+											</button>
+											<button className="button-delete border-rounded">
+												Delete
+											</button>
+										</div>
 									</div>
-								</div>
-							}></UserOverview>
-					))}
+								}></UserOverview>
+						))
+					) : (
+						<React.Fragment>
+							<UserPlaceHolder />
+							<UserPlaceHolder />
+							<UserPlaceHolder />
+							<UserPlaceHolder />
+						</React.Fragment>
+					)}
 				</div>
 				<div className="chat-box__friend-list">
 					{friends.map((friend, index) => (
-						<Col md={3} xs={12} className="mb-4">
+						<Col key={index} md={12} lg={3} xs={12} className="mb-4">
 							<UserOverview
-								key={index}
 								avatarUrl={friend.avatarUrl}
 								name={friend.name}
 								className="chat-box__friend-item"
@@ -85,7 +127,9 @@ const FriendList = () => {
 					))}
 				</div>
 			</div>
+		    <SearchFriend.Modal></SearchFriend.Modal>
 		</div>
+		</SearchFriend.Provider>
 	);
 };
 

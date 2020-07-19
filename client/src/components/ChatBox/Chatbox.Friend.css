@@ -10,7 +10,15 @@
 	font-size: x-large;
 	font-weight: bold;
 	z-index: 1;
-	background: white;
+	background: white;    
+	display: flex;
+    align-items: center;
+}
+
+.chat-box__friend .chat-box__header .messenger__button{
+	font-size: 14px;
+    margin-left: 200px;
+    border: none;
 }
 
 .chat-box__friend .chat-box__body {
@@ -109,4 +117,27 @@
 .chat-box__friend .chat-box__friend-item:hover {
 	box-shadow: 0px 6px 18px -8px #c1c1c1;
 	cursor: pointer;
+}
+
+.chat-box__friend .chat-box__friend-request .user-overview.place-holder {
+	display: flex;
+	align-items: center;
+	padding: 15px;
+}
+
+.chat-box__friend
+	.chat-box__friend-request
+	.user-overview.place-holder
+	.message-item__content {
+	width: calc(100% - 80px);
+	margin-left: 10px;
+	border-radius: 4px;
+}
+
+.chat-box__friend
+	.chat-box__friend-request
+	.user-overview.place-holder
+	.message-item__content
+	.line:not(:last-child) {
+	margin-bottom: 5px;
 }

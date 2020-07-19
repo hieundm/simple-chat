@@ -1,10 +1,11 @@
+const _ = require("lodash");
 const mongoose = require("mongoose");
 const friendRequestSchema = new mongoose.Schema({
-  from_user_id: {
+  sender_id: {
     type: "ObjectId",
     required: true,
   },
-  to_user_id: {
+  receiver_id: {
     type: "ObjectId",
     required: true,
   },
@@ -26,6 +27,29 @@ const friendRequestSchema = new mongoose.Schema({
   },
 });
 
-const friendRequest = mongoose.model("friend-request", friendRequestSchema);
 
-module.exports = friendRequest;
+const FriendRequestModel = mongoose.model("friend-request", friendRequestSchema);
+
+class FriendRequest extends FriendRequestModel {
+  constructor() {
+    super();
+  }
+
+  instance() {
+    return FriendRequest;
+  }
+
+  async getListByReceiverId(receiverId) {
+    return await FriendRequestModel.find({ receiver_id: mongoose.Types.ObjectId(receiverId) });
+  }
+
+  getTotalRequest(userId) {
+    if (_.isEmpty(userId) === true) {
+      return 0;
+    }
+
+    return FriendRequestModel.countDocuments({ receiver_id: userId });
+  }
+}
+
+module.exports = new FriendRequest();

@@ -2,16 +2,16 @@ const express = require("express");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
-const utils = require("../helpers/utils");
+const _ = require('lodash');
 const connection = require("../connection/connection");
 const { manipulate } = require("../helpers/function-base");
 const validateCode = require("../constants/auth/validate-code");
 const responseCode = require("../constants/response-code");
 const { hashPassword, validateEmail } = require("../helpers/crypto");
 
-connection.once("open", function () {});
+connection.once("open", function () { });
 
-const { User } = require("../models/user");
+const User = require("../models/user");
 
 /**
  * @swagger
@@ -61,7 +61,13 @@ router.post("/", async function (req, res) {
 			return;
 		}
 
-		const data = await User.findOne({ email: email });
+		const data = await User.getByEmail(email);
+
+		if (_.isEmpty(data) === true) {
+			res.send(responseData);
+
+			return;
+		}
 
 		const hashedPasswordWithSalt = hashPassword(password, data.salt);
 
@@ -72,7 +78,7 @@ router.post("/", async function (req, res) {
 
 			return;
 		} else {
-			const displayName = utils.getDisplayName(data.first_name, data.last_name);
+			const displayName = User.getDisplayName();
 
 			const token = jwt.sign(
 				{
