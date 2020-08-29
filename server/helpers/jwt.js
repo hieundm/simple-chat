@@ -52,6 +52,7 @@ const jwt = () => {
 			"/account/register",
 			/^\/readme/,
 			/^\/readme\/.*/,
+			/^\/shared\/*/
 		],
 	});
 };

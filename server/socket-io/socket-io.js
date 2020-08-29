@@ -1,18 +1,19 @@
 const socketIO = require("socket.io");
 const _ = require("lodash");
 const { friendInit } = require("./friend");
+const { friendRequestInit } = require("./friend-request");
 const { messengerInit } = require("./messenger");
 const User = require("../models/user");
 
-var io;
+let io;
 
 const createSocketServer = (server) => {
 	io = socketIO(server);
 	init();
 };
 
-const onConnected = async(email) => {
-	if(_.isEmpty(email) === true){
+const onConnected = async (email) => {
+	if (_.isEmpty(email) === true) {
 		return;
 	}
 
@@ -40,6 +41,8 @@ const init = () => {
 		messengerInit(socket, io);
 
 		friendInit(socket, io);
+
+		friendRequestInit(socket, io); 
 	});
 };
 

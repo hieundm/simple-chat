@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { signIn } from "../../services/Auth";
 import "./Index.css";
 
+import * as rdd from "react-device-detect";
+
 const Login = () => {
   const [formData, setFormData] = React.useState({
     email: "",

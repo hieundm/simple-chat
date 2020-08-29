@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, InputGroup, FormControl } from "react-bootstrap";
-import Loader from "../Loader";
 import { base } from "../../helpers/Utils";
 import regex from "../../helpers/Regex";
 import { notify } from "../../helpers/Toast";

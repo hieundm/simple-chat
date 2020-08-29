@@ -78,8 +78,14 @@ class User extends UserModel {
 		return UserModel;
 	}
 
-	get(){
-		return this.data;
+	async get(id){
+		const user = await User.findOne({ _id: id });
+
+		if (_.isEmpty(user) === true) {
+			return null;
+		}
+
+		return user;
 	}
 
 	async getUserListByIds(ids, optionSelect) {
@@ -117,6 +123,20 @@ class User extends UserModel {
 		this.set(user);
 
 		return this.data;
+	}
+
+	async getListByEmails(arEmail){
+		if (_.isEmpty(arEmail) === true){
+			return null;
+		}
+
+		const users = await User.find({ email: { $in: arEmail} });
+
+		if (_.isEmpty(users) === true) {
+			return null;
+		}
+
+		return users;
 	}
 
 	getDisplayName() {

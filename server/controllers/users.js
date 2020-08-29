@@ -2,10 +2,6 @@ const express = require("express");
 const router = express.Router();
 const connection = require("../connection/connection");
 
-connection.once("open", function () {
-	console.log("MongoDB database connection established successfully");
-});
-
 const { User } = require("../models/user");
 
 /**

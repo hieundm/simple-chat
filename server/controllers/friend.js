@@ -1,10 +1,9 @@
 const _ = require("lodash"),
 	express = require("express"),
+	{io} = require("../socket-io/socket-io"),
 	router = express.Router(),
 	mongoose = require("mongoose"),
 	mapper = require("../AutoMapper"),
-	connection = require("../connection/connection"),
-	{ manipulate } = require("../helpers/function-base"),
 	responseCode = require("../constants/response-code"),
 	{ validateEmail } = require("../helpers/crypto"),
 	getList = require("../models/shared/get-list"),
@@ -12,7 +11,6 @@ const _ = require("lodash"),
 	FriendRequest = require("../models/friend-request"),
 	User = require("../models/user"),
 	{ authenticateJWT } = require("../helpers/jwt");
-connection.once("open", function () { });
 
 /**
  * @swagger
@@ -49,7 +47,7 @@ connection.once("open", function () { });
  *        - Friend
  */
 router.post("/find", authenticateJWT, async (req, res) => {
-	await manipulate(async responseData => {
+	await global.manipulate(async responseData => {
 		const { email, phone, lastUserId } = req.body;
 
 		if (req.user.sub === email) {
@@ -74,7 +72,7 @@ router.post("/find", authenticateJWT, async (req, res) => {
 		let users;
 		let query = {
 			$and: [
-				{ $or: [{ email: email }, { phone1: phone }] },
+				{ $or: [{ email: new RegExp(email) }, { phone1: new RegExp(phone) }] },
 				{ is_active: true },
 			],
 		};
@@ -115,8 +113,8 @@ router.post("/find", authenticateJWT, async (req, res) => {
  *  post:
  *    description: Send request to add friend
  *    parameters:
- *       - name: toUserId
- *         description: Id of user want to add.
+ *       - name: senderEmail
+ *         description: email of user want to add.
  *         required: true
  *         in: formData
  *         type: string
@@ -141,11 +139,11 @@ router.post("/find", authenticateJWT, async (req, res) => {
  *        - Friend
  */
 router.post("/send-request", authenticateJWT, async (req, res) => {
-	await manipulate(async responseData => {
+	await global.manipulate(async responseData => {
 		const { sub } = req.user;
-		const { toUserId } = req.body;
+		const { senderEmail } = req.body;
 
-		if (!sub) {
+		if (!sub || !senderEmail) {
 			responseData.code = responseCode.invalidParam.value;
 			responseData.message = responseCode.invalidParam.description;
 
@@ -153,30 +151,53 @@ router.post("/send-request", authenticateJWT, async (req, res) => {
 
 			return;
 		}
+
+		io.socket.emit("onReceiveNewRequest", mapper(sender, "basic-user"));
+
+		return res.send(responseData);
 
 		responseData.code = responseCode.success.value;
 		responseData.message = responseCode.success.description;
 
-		const user = await User.findOne({ email: sub });
+		const users = await User.getListByEmails([sub, senderEmail]);
 
-		if (!user || !toUserId) {
-			responseData.code = responseCode.invalidParam.value;
-			responseData.message = responseCode.invalidParam.description;
+		if (_.isEmpty(users) === true) {
+			responseData.code = responseCode.failed.value;
+			responseData.message = responseCode.failed.description;
 
 			res.send(responseData);
 
 			return;
 		}
 
-		const newFriend = new FriendRequest({
-			from_user_id: user.id,
-			to_user_id: toUserId,
+		let sender;
+
+		let friendRequest = {
+			sender_id: null,
+			receiver_id: null,
+		};
+
+		users.forEach(user => {
+			if(_.isEqual(user.email, sub) === true){
+				friendRequest.receiver_id = user.id;
+			}
+
+			if (_.isEqual(user.email, senderEmail) === true) {
+				friendRequest.sender_id = user.id;
+
+				sender = user;
+			}
 		});
 
-		newFriend.save(error => {
+		const newFriendRequest = new FriendRequest(friendRequest);
+		
+		newFriendRequest.save(error => {
 			if (error) {
 				responseData.code = responseCode.failed.value;
 				responseData.message = responseCode.failed.description;
+			}
+			else {
+				io.socket.emit("onReceiveNewRequest", mapper(sender, "basic-user"));
 			}
 		});
 
@@ -186,7 +207,7 @@ router.post("/send-request", authenticateJWT, async (req, res) => {
 
 /**
  * @swagger
- * /friend/list:
+ * /friend/request/list:
  *  get:
  *    description: Get your friend list
  *    responses:
@@ -209,8 +230,8 @@ router.post("/send-request", authenticateJWT, async (req, res) => {
  *    tags:
  *        - Friend
  */
-router.get("/list", authenticateJWT, async (req, res) => {
-	await manipulate(async responseData => {
+router.get("/request/list", authenticateJWT, async (req, res) => {
+	await global.manipulate(async responseData => {
 		const { sub } = req.user;
 
 		if (!sub) {
@@ -275,6 +296,93 @@ router.get("/list", authenticateJWT, async (req, res) => {
 		});
 
 		responseData.data = temp;
+
+		res.send(responseData);
+	});
+});
+
+/**
+ * @swagger
+ * /friend/list:
+ *  get:
+ *    description: Get your friend list
+ *    responses:
+ *      "200":
+ *        description: OK
+ *        content:
+ *           application/json:
+ *            schema:
+ *            type: object
+ *            properties:
+ *              code:
+ *                type: integer
+ *                description: response code
+ *              message:
+ *                type: string
+ *                description: response message
+ *              data:
+ *                type: object
+ *                description: response data
+ *    tags:
+ *        - Friend
+ */
+router.get("/list", authenticateJWT, async (req, res) => {
+	await global.manipulate(async responseData => {
+		const { sub } = req.user;
+
+		if (!sub) {
+			responseData.code = responseCode.invalidParam.value;
+			responseData.message = responseCode.invalidParam.description;
+
+			res.send(responseData);
+
+			return;
+		}
+
+		responseData.code = responseCode.success.value;
+		responseData.message = responseCode.success.description;
+
+		const user = await User.getByEmail(sub);
+
+		if (!user) {
+			responseData.code = responseCode.invalidParam.value;
+			responseData.message = responseCode.invalidParam.description;
+
+			res.send(responseData);
+
+			return;
+		}
+
+		const lstFriend = await Friend.getListByUserId(user.id);
+
+		if (_.isEmpty(lstFriend) === true) {
+			responseData = getList(0, null);
+
+			res.send(responseData);
+
+			return;
+		}
+
+		const lstUser = await User.getUserListByIds(
+			lstFriend.map(x => x.user_friend_id).join(","),
+			{ first_name: 1, last_name: 1, avatar: 1 }
+		);
+
+		if (_.isEmpty(lstUser) === true) {
+			res.send(responseData);
+
+			return;
+		}
+
+		let iCounter = 0;
+		const temp = [];
+
+		lstUser.forEach(user => {
+			temp.push(mapper(user, "friend"));
+			iCounter++;
+		});
+
+		responseData.data = getList(iCounter, temp);
 
 		res.send(responseData);
 	});

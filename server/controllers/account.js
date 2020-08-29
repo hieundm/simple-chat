@@ -1,13 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const connection = require("../connection/connection");
-const { manipulate } = require("../helpers/function-base");
 const responseCode = require("../constants/response-code");
 const { User } = require("../models/user");
 const { hashPassword, validateEmail } = require("../helpers/crypto");
 const { randomString } = require("../helpers/Utils");
-
-connection.once("open", function () {});
 
 /**
  * @swagger
@@ -46,7 +42,7 @@ connection.once("open", function () {});
  *        - Account
  */
 router.post("/forgot-password", async (req, res) => {
-	await manipulate(async (responseData) => {
+	await global.manipulate(async (responseData) => {
 		const { email, newPassword } = req.body;
 
 		const user = await User.findOne({ email: email });
@@ -133,7 +129,7 @@ router.post("/forgot-password", async (req, res) => {
  *        - Account
  */
 router.post("/register", async (req, res) => {
-	await manipulate(async (responseData) => {
+	await global.manipulate(async (responseData) => {
 		const {
 			first_name,
 			last_name,

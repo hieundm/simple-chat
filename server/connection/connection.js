@@ -12,4 +12,8 @@ mongoose.connect(
   }
 );
 
+mongoose.connection.once("open", function () {
+  console.log("MongoDB database connection established successfully");
+});
+
 module.exports = mongoose.connection;

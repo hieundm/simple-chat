@@ -1,6 +1,8 @@
-const axios = require("axios");
-const { apiHost, cookie } = require("../appsetting.json");
-const { notify } = require("./Toast");
+import axios from "axios";
+import { apiHost, cookie } from "../appsetting.json";
+import { notify } from "./Toast";
+import * as rdd from "react-device-detect";
+import StringBuffer from "./StringBuffer";
 
 const base = {
 	get: path => {
@@ -8,11 +10,30 @@ const base = {
 			if (!path || path.length < 1) {
 				throw "path can not be null";
 			}
+			// console.log("------------------");
+			// console.log("os:", rdd.osName);
+			// console.log("brand:", rdd.mobileVendor);
+			// console.log("model:", rdd.mobileModel);
+			// console.log("os version:", rdd.osVersion);
+			// console.log("browser name:", rdd.browserName);
+			// console.log("browserVersion:", rdd.browserVersion);
+			// console.log("is-mobile", rdd.isMobile);
+
+			const object = {
+				brand: rdd.mobileVendor,
+				browserName: rdd.browserName,
+				browserVersion: rdd.browserVersion,
+				isMobile: rdd.isMobile,
+				model: rdd.mobileModel,
+				os: rdd.osName,
+				osVersion: rdd.osVersion,
+			};
 
 			axios
 				.get(`${apiHost}${path}`, {
 					headers: {
-						Authorization: atob(base.getCookie(cookie.credential)),
+						"Authorization": atob(base.getCookie(cookie.credential)),
+						"SC-Device-Token": btoa(JSON.stringify(object))
 					},
 				})
 				.then(response => {

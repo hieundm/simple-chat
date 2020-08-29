@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+const _ = require("lodash"),
+      mongoose = require("mongoose");
 const friendSchema = new mongoose.Schema({
   user_id: {
     type: "ObjectId",
@@ -19,6 +20,21 @@ const friendSchema = new mongoose.Schema({
   },
 });
 
-const Friend = mongoose.model("friend", friendSchema);
+const FriendModel = mongoose.model("friends", friendSchema);
 
-module.exports = Friend;
+class Friend extends FriendModel {
+  constructor() {
+    super();
+  }
+
+  instance() {
+    return Friend;
+  }
+
+  async getListByUserId(userId) {
+    return await Friend.find({ user_id: mongoose.Types.ObjectId(userId) });
+  }
+
+}
+
+module.exports = new Friend();

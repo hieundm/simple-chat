@@ -1,17 +1,16 @@
-const ResponseData = require("../models/shared/response-data");
-const responseCode = require("../constants/response-code");
+const responseData = require("../models/shared/response-data");
 
 const manipulate = async (toDo) => {
   try {
-    const responseData = new ResponseData(
-      responseCode.failed.value,
-      responseCode.failed.description
+    const response = new responseData(
+      global.responseCode.failed.value,
+      global.responseCode.failed.description
     );
 
     if (toDo.constructor.name === "AsyncFunction") {
-      await toDo(responseData);
+      await toDo(response);
     } else {
-      toDo(responseData);
+      toDo(response);
     }
   } catch (error) {
     console.log(error);

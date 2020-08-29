@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const cookieParser = require("cookie-parser"),
+	connection = require("./connection/connection"),
 	cors = require("cors"),
 	createError = require("http-errors"),
 	express = require("express"),
@@ -12,6 +13,9 @@ const cookieParser = require("cookie-parser"),
 	swaggerDocument = require("./swagger.ts"),
 	swaggerJsDoc = require("swagger-jsdoc"),
 	swaggerUi = require("swagger-ui-express");
+
+global.responseCode = require("./constants/response-code");
+global.manipulate = require("./helpers/function-base").manipulate;
 
 const app = express();
 

@@ -3,13 +3,9 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
 const _ = require('lodash');
-const connection = require("../connection/connection");
-const { manipulate } = require("../helpers/function-base");
 const validateCode = require("../constants/auth/validate-code");
 const responseCode = require("../constants/response-code");
 const { hashPassword, validateEmail } = require("../helpers/crypto");
-
-connection.once("open", function () { });
 
 const User = require("../models/user");
 
@@ -50,7 +46,7 @@ const User = require("../models/user");
  *        - Auth
  */
 router.post("/", async function (req, res) {
-	manipulate(async (responseData) => {
+	global.manipulate(async (responseData) => {
 		const { email, password } = req.body;
 
 		const code = validateAuthRequest(email, password);

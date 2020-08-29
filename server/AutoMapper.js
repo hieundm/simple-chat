@@ -1,9 +1,33 @@
+const _ = require("lodash");
 const automapper = require("automapper-ts");
 
-const autoMapper = (sourceObject, targetName, fromName) => {
-	const _target = targetName.toLowerCase();
 
-	switch (_target) {
+/**
+ * SourceObject: source | Destination: your key which you wanna map
+ */
+const autoMapper = (sourceObject, destination) => {
+	if(_.isEmpty(sourceObject) === true){
+		throw "Your source can not be null!!!!!!!!";
+	}
+
+	if(_.isEmpty(destination) === true){
+		throw "Please tell me what the key you wanna map ???";
+	}
+
+	switch (destination.toLowerCase()) {
+		case "basic-user":
+			automapper
+				.createMap("basic-user", "user")
+				.ignoreAllNonExisting()
+				.forMember("email", function (opts) {
+					opts.mapFrom("email");
+				})
+				.forMember("avatarUrl", function (opts) {
+					opts.mapFrom("avatar");
+				})
+				.forMember("displayName", function (opts) {
+					return `${opts.sourceObject.last_name} ${opts.sourceObject.first_name}`;
+				});
 		case "get":
 			automapper
 				.createMap("get", "user")
@@ -83,6 +107,21 @@ const autoMapper = (sourceObject, targetName, fromName) => {
 				});
 
 			return automapper.map("friend-request", "user", sourceObject);
+		case "friend":
+			automapper
+				.createMap("friend", "user")
+				.ignoreAllNonExisting()
+				.forMember("userId", function (opts) {
+					opts.mapFrom("_id");
+				})
+				.forMember("avatarUrl", function (opts) {
+					opts.mapFrom("avatar");
+				})
+				.forMember("displayName", function (opts) {
+					return `${opts.sourceObject.last_name} ${opts.sourceObject.first_name}`;
+				});
+
+			return automapper.map("friend", "user", sourceObject);
 
 		default:
 			return null;
